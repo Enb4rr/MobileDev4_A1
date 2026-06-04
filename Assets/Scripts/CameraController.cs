@@ -6,6 +6,7 @@ public class CameraController : MonoBehaviour
     [SerializeField] private Transform target;
     [SerializeField] private float followHeight = 10f;
     [SerializeField] private float followDistance = 8f;
+    [SerializeField] private float followSmoothing = 0.1f;
 
     [Header("Zoom")]
     [SerializeField] private float zoomSpeed = 0.1f;
@@ -14,8 +15,10 @@ public class CameraController : MonoBehaviour
 
     [Header("Rotation")]
     [SerializeField] private float rotationSpeed = 0.3f;
+    [SerializeField] private float rotationSmoothing = 0.1f;
 
     private Camera mainCamera;
+    private float targetAngle = 0f;
     private float currentAngle = 0f;
 
     private void Awake()
@@ -31,12 +34,13 @@ public class CameraController : MonoBehaviour
 
     private void Follow()
     {
-        // Recompute position from angle + distance every frame
+        // Smoothly chase the orbit angle toward the target angle
+        currentAngle = Mathf.LerpAngle(currentAngle, targetAngle, Time.deltaTime / rotationSmoothing);
         float rad = currentAngle * Mathf.Deg2Rad;
-        Vector3 offset = new Vector3(Mathf.Sin(rad) * followDistance, followHeight, -Mathf.Cos(rad) * followDistance);
+        Vector3 desiredPosition = target.position + new Vector3(Mathf.Sin(rad) * followDistance, followHeight, -Mathf.Cos(rad) * followDistance);
 
-        // Look at ball
-        transform.position = target.position + offset;
+        // Smoothly chase the ball position rather than snapping
+        transform.position = Vector3.Lerp(transform.position, desiredPosition, Time.deltaTime / followSmoothing);
         transform.LookAt(target);
     }
 
@@ -47,7 +51,6 @@ public class CameraController : MonoBehaviour
         Touch t0 = Input.GetTouch(0);
         Touch t1 = Input.GetTouch(1);
 
-        // Previous positions
         Vector2 t0Prev = t0.position - t0.deltaPosition;
         Vector2 t1Prev = t1.position - t1.deltaPosition;
 
@@ -59,12 +62,10 @@ public class CameraController : MonoBehaviour
         mainCamera.fieldOfView = Mathf.Clamp(mainCamera.fieldOfView + pinchDelta * zoomSpeed, minFOV, maxFOV);
 
         // Rotation
-        // Angle of the line between fingers, this frame vs last frame
         float prevAngle = Mathf.Atan2(t1Prev.y - t0Prev.y, t1Prev.x - t0Prev.x) * Mathf.Rad2Deg;
-
         float currAngle = Mathf.Atan2(t1.position.y - t0.position.y, t1.position.x - t0.position.x) * Mathf.Rad2Deg;
-
         float twistDelta = Mathf.DeltaAngle(prevAngle, currAngle);
-        currentAngle -= twistDelta * rotationSpeed;
+        
+        targetAngle -= twistDelta * rotationSpeed;
     }
 }
