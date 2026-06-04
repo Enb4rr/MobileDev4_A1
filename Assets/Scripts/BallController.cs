@@ -16,7 +16,6 @@ public class BallController : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();
 
-        // Explicitly enable the accelerometer
         if (Accelerometer.current != null)
             InputSystem.EnableDevice(Accelerometer.current);
     }
@@ -32,13 +31,12 @@ public class BallController : MonoBehaviour
 
         Vector3 raw = Accelerometer.current.acceleration.ReadValue();
 
-        // Smooth the raw reading to reduce jitter
-        smoothedAccel = Vector3.Lerp(smoothedAccel, raw, Time.deltaTime * smoothing);
+        float lerpFactor = Mathf.Clamp01(Time.deltaTime / smoothing);
+        smoothedAccel = Vector3.Lerp(smoothedAccel, raw, lerpFactor);
 
-        // Landscape axis remapping + optional invert
-        float x = invertX ? smoothedAccel.y : -smoothedAccel.y;
-        float z = invertY ? smoothedAccel.x : -smoothedAccel.x;
+        float x = invertX ?  smoothedAccel.y : -smoothedAccel.y;
+        float z = invertY ?  smoothedAccel.x : -smoothedAccel.x;
 
-        rb.AddForce(new Vector3(x, 0f, z) * tiltForce, ForceMode.Acceleration);
+        rb.AddForce(new Vector3(z, 0f, x) * tiltForce, ForceMode.Acceleration);
     }
 }

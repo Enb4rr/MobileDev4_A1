@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 6370559897437112104}
   m_Layer: 0
   m_Name: Ball
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -69,7 +69,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  - {fileID: 2100000, guid: 0bd9f05888f51fc4892d505128c2353e, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -153,4 +153,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0df6216e197e8a146bac03f307d81632, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BallController
-  speed: 10
+  tiltForce: 20
+  invertX: 1
+  invertY: 1
+  smoothing: 0.15

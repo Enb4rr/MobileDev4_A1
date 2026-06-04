@@ -1,4 +1,6 @@
+using System;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class GameManager : MonoBehaviour
 {
@@ -20,6 +22,7 @@ public class GameManager : MonoBehaviour
     // Read by UIManager
     public float ElapsedTime => elapsedTime;
     public int ActiveZoneIndex => activeZoneIndex;
+    public bool IsPlaying => isPlaying;
 
     private void Awake()
     {
@@ -34,6 +37,11 @@ public class GameManager : MonoBehaviour
         // Tell each zone what its index is
         for (int i = 0; i < exitZones.Length; i++)
             exitZones[i].ZoneIndex = i;
+    }
+
+    private void Start()
+    {
+        StartGame();
     }
 
     public void StartGame()

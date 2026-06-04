@@ -26,7 +26,7 @@ public class UIManager : MonoBehaviour
     private void Update()
     {
         // Continuously update timer while playing
-        if (hudPanel.activeSelf)
+        if (hudPanel.activeSelf && GameManager.Instance.IsPlaying)
             timerLabel.text = $"Time: {GameManager.Instance.ElapsedTime:F1}s";
     }
 

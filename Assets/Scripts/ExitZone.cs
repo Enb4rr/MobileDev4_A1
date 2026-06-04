@@ -11,6 +11,7 @@ public class ExitZone : MonoBehaviour
     private void Awake()
     {
         materialRenderer = GetComponent<Renderer>();
+        materialRenderer.material.SetFloat(EmissionIntensity, 0f);
     }
     
     private void OnTriggerEnter(Collider other)
